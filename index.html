@@ -1,0 +1,587 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Design Placement Roadmap</title>
+<style>
+:root {
+  --bg: #0b1020;
+  --panel: #121a2e;
+  --panel2: #17223a;
+  --text: #e8eefc;
+  --muted: #94a3b8;
+  --accent: #6d8cff;
+  --green: #36d399;
+  --border: #27344e;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, system-ui, Arial, sans-serif;
+}
+.container { max-width: 1200px; margin: auto; padding: 30px 20px; }
+.hero {
+  padding: 35px;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: linear-gradient(135deg,#182447,#11192c);
+}
+.hero h1 { font-size: 36px; margin: 0 0 10px; }
+.hero p { color: var(--muted); line-height: 1.6; }
+.tag {
+  display: inline-block; padding: 7px 12px;
+  background: #26375d; color: #a9bcff;
+  border-radius: 20px; font-size: 12px; margin-bottom: 12px;
+}
+.stats {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  gap: 15px; margin: 22px 0;
+}
+.stat {
+  background: var(--panel); padding: 22px;
+  border: 1px solid var(--border); border-radius: 18px;
+}
+.stat h3 { color: var(--muted); font-size: 13px; margin: 0 0 10px; }
+.stat strong { font-size: 27px; }
+.progress-bg {
+  background: #26344c; height: 9px;
+  border-radius: 20px; overflow: hidden; margin-top: 12px;
+}
+.progress-fill {
+  height: 100%; background: var(--green);
+  width: 0%; transition: width .3s;
+}
+.toolbar {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  margin: 25px 0;
+}
+button, select {
+  padding: 11px 16px; border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--panel2); color: var(--text);
+  cursor: pointer; font-size: 14px;
+}
+button:hover { border-color: var(--accent); }
+.phase {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 18px; padding: 22px; margin: 18px 0;
+}
+.phase-header {
+  display: flex; justify-content: space-between;
+  gap: 15px; flex-wrap: wrap; align-items: center;
+}
+.phase h2 { margin: 0; font-size: 20px; }
+.phase small { color: var(--muted); }
+.phase-progress { color: var(--green); font-size: 13px; }
+.topics { margin-top: 20px; }
+.topic {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 12px 8px; border-bottom: 1px solid #202c43;
+}
+.topic:last-child { border-bottom: none; }
+.topic input {
+  margin-top: 4px; width: 17px; height: 17px;
+  accent-color: var(--green); cursor: pointer;
+}
+.topic label { cursor: pointer; line-height: 1.5; flex: 1; }
+.topic.done label { color: #73839c; text-decoration: line-through; }
+.phase-note {
+  margin-top: 18px; padding: 13px;
+  background: var(--panel2); border-radius: 12px;
+  color: var(--muted); font-size: 14px;
+}
+.section-title { margin-top: 38px; font-size: 24px; }
+.project {
+  background: var(--panel); border: 1px solid var(--border);
+  padding: 22px; border-radius: 18px; margin: 15px 0;
+}
+.project h3 { margin-top: 0; }
+.project small { color: var(--muted); }
+footer { color: var(--muted); text-align: center; padding: 30px; }
+.hidden { display: none !important; }
+@media(max-width:700px) {
+  .stats { grid-template-columns: repeat(2,1fr); }
+  .hero h1 { font-size: 26px; }
+  .container { padding: 15px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="hero">
+    <span class="tag">16-WEEK PLACEMENT ROADMAP</span>
+    <h1>System Design Tracker</h1>
+    <p>
+      Your complete roadmap to mastering System Design for SDE placements.
+      Learn architecture, scalability, databases, caching, APIs, distributed systems
+      and build real-world projects.
+    </p>
+    <p>🎯 Goal: Become confident in System Design interviews.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <h3>Overall Progress</h3>
+      <strong id="percent">0%</strong>
+      <div class="progress-bg"><div class="progress-fill" id="overallBar"></div></div>
+    </div>
+    <div class="stat">
+      <h3>Completed Topics</h3>
+      <strong id="completed">0</strong>
+    </div>
+    <div class="stat">
+      <h3>Remaining Topics</h3>
+      <strong id="remaining">0</strong>
+    </div>
+    <div class="stat">
+      <h3>Total Topics</h3>
+      <strong id="total">0</strong>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <select id="filter">
+      <option value="all">Show All Topics</option>
+      <option value="pending">Show Incomplete</option>
+      <option value="done">Show Completed</option>
+    </select>
+    <button onclick="expandAll()">Expand All</button>
+    <button onclick="collapseAll()">Collapse All</button>
+    <button onclick="resetProgress()">Reset Progress</button>
+  </div>
+
+  <div id="roadmap"></div>
+
+  <h2 class="section-title">🚀 Practical Projects</h2>
+  <div id="projects"></div>
+
+  <h2 class="section-title">📅 Daily Study Routine</h2>
+  <div class="phase">
+    <div class="topics">
+      <div class="topic"><input type="checkbox" data-id="routine1"><label>30 minutes — Learn a new System Design concept</label></div>
+      <div class="topic"><input type="checkbox" data-id="routine2"><label>20 minutes — Draw architecture and make notes</label></div>
+      <div class="topic"><input type="checkbox" data-id="routine3"><label>30 minutes — Practical implementation</label></div>
+      <div class="topic"><input type="checkbox" data-id="routine4"><label>10 minutes — Interview questions and revision</label></div>
+    </div>
+  </div>
+
+  <h2 class="section-title">📝 Placement Practice</h2>
+  <div class="phase">
+    <div class="topics">
+      <div class="topic"><input type="checkbox" data-id="interview1"><label>Explain Client-Server architecture</label></div>
+      <div class="topic"><input type="checkbox" data-id="interview2"><label>Design a URL Shortener</label></div>
+      <div class="topic"><input type="checkbox" data-id="interview3"><label>Design WhatsApp</label></div>
+      <div class="topic"><input type="checkbox" data-id="interview4"><label>Design Instagram</label></div>
+      <div class="topic"><input type="checkbox" data-id="interview5"><label>Design YouTube</label></div>
+      <div class="topic"><input type="checkbox" data-id="interview6"><label>Design Amazon</label></div>
+      <div class="topic"><input type="checkbox" data-id="interview7"><label>Design Uber</label></div>
+      <div class="topic"><input type="checkbox" data-id="interview8"><label>Design Food Delivery System</label></div>
+      <div class="topic"><input type="checkbox" data-id="interview9"><label>Design Notification System</label></div>
+      <div class="topic"><input type="checkbox" data-id="interview10"><label>Design Ticket Booking System</label></div>
+      <div class="topic"><input type="checkbox" data-id="interview11"><label>Design a Rate Limiter</label></div>
+    </div>
+  </div>
+
+  <footer>Keep learning. Keep building. Keep improving. 💻</footer>
+</div>
+
+<script>
+const phases = [
+{
+title:"Phase 1 — System Design Foundations",
+weeks:"Week 1",
+note:"Draw the architecture of a login application.",
+topics:[
+"What is System Design?",
+"HLD vs LLD",
+"Functional requirements",
+"Non-functional requirements",
+"Client-server architecture",
+"Browser and server communication",
+"Request-response lifecycle",
+"HTTP and HTTPS",
+"DNS",
+"TCP basics",
+"REST APIs",
+"JSON"
+]},
+{
+title:"Phase 2 — Database Design",
+weeks:"Weeks 2–3",
+note:"Design a database for a social media application.",
+topics:[
+"SQL vs NoSQL",
+"MongoDB vs PostgreSQL",
+"Database schema design",
+"One-to-one relationships",
+"One-to-many relationships",
+"Many-to-many relationships",
+"Indexes",
+"Compound indexes",
+"Unique indexes",
+"Query optimization",
+"Normalization",
+"Denormalization",
+"Aggregation basics",
+"Transactions",
+"Database connection pooling"
+]},
+{
+title:"Phase 3 — Scaling Fundamentals",
+weeks:"Week 4",
+note:"Explain how you would scale your application for 10,000 users.",
+topics:[
+"Vertical scaling",
+"Horizontal scaling",
+"Stateless vs stateful servers",
+"Load balancers",
+"Reverse proxies",
+"Single server limitations",
+"Bottlenecks",
+"Auto-scaling concepts"
+]},
+{
+title:"Phase 4 — Caching",
+weeks:"Week 5",
+note:"Add Redis caching to a project API.",
+topics:[
+"What is caching?",
+"Why caching is needed",
+"Redis fundamentals",
+"Cache-aside pattern",
+"Read-through caching",
+"Write-through caching",
+"Cache invalidation",
+"TTL (Time To Live)",
+"Cache eviction policies",
+"CDN basics",
+"Browser caching"
+]},
+{
+title:"Phase 5 — API Design & Security",
+weeks:"Week 6",
+note:"Design secure and scalable APIs for an e-commerce app.",
+topics:[
+"REST API design",
+"HTTP methods",
+"HTTP status codes",
+"Pagination",
+"Cursor pagination",
+"Filtering and sorting",
+"API versioning",
+"Rate limiting",
+"Authentication",
+"Authorization",
+"JWT",
+"Refresh tokens",
+"OAuth basics",
+"Input validation",
+"CORS",
+"HTTPS",
+"OWASP basics"
+]},
+{
+title:"Phase 6 — Background Jobs & Messaging",
+weeks:"Week 7",
+note:"Build a background email processing system.",
+topics:[
+"Synchronous vs asynchronous processing",
+"Background jobs",
+"Message queues",
+"Producer and consumer",
+"RabbitMQ basics",
+"BullMQ",
+"Redis queues",
+"Retry mechanisms",
+"Dead-letter queues",
+"Idempotency"
+]},
+{
+title:"Phase 7 — Real-Time Systems",
+weeks:"Week 8",
+note:"Design a chat system for 100,000 users.",
+topics:[
+"Polling",
+"Long polling",
+"WebSockets",
+"Socket.io",
+"Real-time notifications",
+"Chat architecture",
+"Online presence",
+"Message delivery",
+"Connection management"
+]},
+{
+title:"Phase 8 — Architecture Patterns",
+weeks:"Week 9",
+note:"Explain why a modular monolith may be better than microservices for a startup.",
+topics:[
+"Monolithic architecture",
+"Modular monolith",
+"Microservices",
+"Event-driven architecture",
+"Service-to-service communication",
+"API Gateway",
+"Pub/Sub",
+"Distributed systems basics",
+"Service discovery"
+]},
+{
+title:"Phase 9 — Distributed Databases",
+weeks:"Week 10",
+note:"Explain what happens when the primary database server goes down.",
+topics:[
+"Replication",
+"Primary-replica architecture",
+"Sharding",
+"Partitioning",
+"Consistency",
+"Eventual consistency",
+"CAP theorem",
+"Failover",
+"Availability",
+"Durability"
+]},
+{
+title:"Phase 10 — Deployment & Infrastructure",
+weeks:"Week 11",
+note:"Deploy a MERN application using Docker.",
+topics:[
+"Linux basics",
+"Docker",
+"Containers",
+"Docker Compose",
+"Cloud fundamentals",
+"AWS basics",
+"CI/CD",
+"Environment variables",
+"Logging",
+"Monitoring",
+"Metrics",
+"Tracing",
+"Health checks"
+]},
+{
+title:"Phase 11 — LLD & OOP",
+weeks:"Weeks 12–13",
+note:"Design a Parking Lot and Elevator System using OOP.",
+topics:[
+"OOP fundamentals",
+"SOLID principles",
+"Encapsulation",
+"Abstraction",
+"Inheritance",
+"Polymorphism",
+"Interfaces",
+"UML diagrams",
+"Composition vs inheritance",
+"Singleton pattern",
+"Factory pattern",
+"Strategy pattern",
+"Observer pattern",
+"Adapter pattern",
+"Decorator pattern",
+"Builder pattern"
+]},
+{
+title:"Phase 12 — Interview-Level System Design",
+weeks:"Weeks 14–16",
+note:"Practice designing these systems from scratch.",
+topics:[
+"Design a URL Shortener",
+"Design WhatsApp",
+"Design Instagram",
+"Design YouTube",
+"Design Amazon",
+"Design Uber",
+"Design a Food Delivery App",
+"Design a Notification System",
+"Design a Ticket Booking System",
+"Design a Rate Limiter"
+]}
+];
+
+const projects = [
+{
+title:"Project 1 — Task Management System",
+weeks:"Weeks 1–5",
+tasks:[
+"Authentication and authorization",
+"Projects and tasks CRUD",
+"MongoDB schema design",
+"Pagination",
+"Filtering and sorting",
+"Database indexes",
+"Redis caching",
+"Rate limiting"
+]},
+{
+title:"Project 2 — Chat Application",
+weeks:"Weeks 6–8",
+tasks:[
+"One-to-one chat",
+"WebSockets",
+"Online status",
+"Message storage",
+"Message pagination",
+"Notifications",
+"Queue-based processing"
+]},
+{
+title:"Project 3 — Scalable E-Commerce System",
+weeks:"Weeks 9–16",
+tasks:[
+"Product catalog",
+"Search",
+"Cart",
+"Orders",
+"Mock payment flow",
+"Inventory management",
+"Redis caching",
+"Background jobs",
+"Database optimization",
+"Docker",
+"Deployment",
+"Monitoring basics"
+]}
+];
+
+const roadmap = document.getElementById("roadmap");
+const projectBox = document.getElementById("projects");
+
+function createTopic(text,id){
+return `<div class="topic">
+<input type="checkbox" data-id="${id}">
+<label>${text}</label>
+</div>`;
+}
+
+phases.forEach((phase,index)=>{
+const html = document.createElement("details");
+html.className="phase";
+html.open = index===0;
+html.innerHTML=`
+<div class="phase-header">
+<div>
+<h2>${phase.title}</h2>
+<small>${phase.weeks}</small>
+</div>
+<span class="phase-progress" id="phase-${index}">0%</span>
+</div>
+<div class="progress-bg"><div class="progress-fill" id="bar-${index}"></div></div>
+<div class="topics">
+${phase.topics.map((t,i)=>createTopic(t,`phase-${index}-${i}`)).join("")}
+</div>
+<div class="phase-note">🎯 Assignment: ${phase.note}</div>
+`;
+roadmap.appendChild(html);
+});
+
+projects.forEach((project,index)=>{
+const div=document.createElement("div");
+div.className="project";
+div.innerHTML=`
+<h3>${project.title}</h3>
+<small>${project.weeks}</small>
+<div class="progress-bg"><div class="progress-fill" id="project-bar-${index}"></div></div>
+<div class="topics">
+${project.tasks.map((t,i)=>createTopic(t,`project-${index}-${i}`)).join("")}
+</div>
+`;
+projectBox.appendChild(div);
+});
+
+function save(){
+document.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
+localStorage.setItem(cb.dataset.id,cb.checked);
+});
+}
+
+function load(){
+document.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
+cb.checked=localStorage.getItem(cb.dataset.id)==="true";
+});
+update();
+}
+
+function update(){
+const boxes=[...document.querySelectorAll('input[type="checkbox"]')];
+const checked=boxes.filter(cb=>cb.checked).length;
+const total=boxes.length;
+const percent=total?Math.round(checked/total*100):0;
+
+document.getElementById("percent").textContent=percent+"%";
+document.getElementById("completed").textContent=checked;
+document.getElementById("remaining").textContent=total-checked;
+document.getElementById("total").textContent=total;
+document.getElementById("overallBar").style.width=percent+"%";
+
+boxes.forEach(cb=>{
+cb.parentElement.classList.toggle("done",cb.checked);
+});
+
+phases.forEach((phase,index)=>{
+const phaseBoxes=phase.topics.map((_,i)=>
+document.querySelector(`[data-id="phase-${index}-${i}"]`)
+);
+const count=phaseBoxes.filter(cb=>cb.checked).length;
+const p=Math.round(count/phaseBoxes.length*100);
+document.getElementById(`phase-${index}`).textContent=p+"%";
+document.getElementById(`bar-${index}`).style.width=p+"%";
+});
+
+projects.forEach((project,index)=>{
+const pboxes=project.tasks.map((_,i)=>
+document.querySelector(`[data-id="project-${index}-${i}"]`)
+);
+const p=Math.round(pboxes.filter(cb=>cb.checked).length/pboxes.length*100);
+document.getElementById(`project-bar-${index}`).style.width=p+"%";
+});
+
+save();
+applyFilter();
+}
+
+function applyFilter(){
+const filter=document.getElementById("filter").value;
+document.querySelectorAll(".topic").forEach(row=>{
+const cb=row.querySelector("input");
+if(!cb)return;
+row.classList.remove("hidden");
+if(filter==="done"&&!cb.checked)row.classList.add("hidden");
+if(filter==="pending"&&cb.checked)row.classList.add("hidden");
+});
+}
+
+document.addEventListener("change",e=>{
+if(e.target.matches('input[type="checkbox"]')){
+update();
+}
+});
+
+document.getElementById("filter").addEventListener("change",applyFilter);
+
+function expandAll(){
+document.querySelectorAll("#roadmap details").forEach(d=>d.open=true);
+}
+function collapseAll(){
+document.querySelectorAll("#roadmap details").forEach(d=>d.open=false);
+}
+function resetProgress(){
+if(confirm("Are you sure you want to reset all your progress?")){
+document.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
+cb.checked=false;
+localStorage.removeItem(cb.dataset.id);
+});
+update();
+}
+}
+load();
+</script>
+</body>
+</html>
